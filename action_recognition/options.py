@@ -248,7 +248,7 @@ def add_input_args(parser):
     )
     group.add_argument(
         '--drop-last',
-        default=True,
+        default=False,
         action=BoolFlagAction,
         help='Drop the last batch if it is incomplete.'
     )
@@ -323,7 +323,7 @@ def add_dataset_args(parser):
     group = parser.add_argument_group("Data")
     group.add_argument(
         '--dataset',
-        default='kinetics',
+        default='ucf101_1',
         type=str,
         help='Dataset name, possibly with split number (e.g. kinetics, ucf101_1)'
     )

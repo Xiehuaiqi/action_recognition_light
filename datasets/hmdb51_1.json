@@ -1,5 +1,5 @@
 {
   "n_classes": 51,
-  "video_path": "hmdb/jpeg2",
-  "annotation_path": "hmdb/hmdb51_1.json"
+  "video_path": "../data/ucf101_videos/hmdb51_jpg_480",
+  "annotation_path": "../data/hmdb51_1.json"
 }

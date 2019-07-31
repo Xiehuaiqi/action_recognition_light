@@ -115,8 +115,13 @@ def setup_dataset(args, train=True, val=True, test=True):
     test_temporal_transform = Compose([temporal_stride, LoopPadding(sample_duration / temporal_stride_size)])
     test_target_transform = ClassLabel()
 
-    test_data = make_dataset(args, 'testing', test_spatial_transform, test_temporal_transform,
-                             test_target_transform) if test else None
+    if test:
+        test_data = make_dataset(args, 'testing', test_spatial_transform, test_temporal_transform,
+                                 test_target_transform)
+    else:None
+
+    # test_data = make_dataset(args, 'testing', test_spatial_transform, test_temporal_transform,
+    #                          test_target_transform) if test else None
 
     return train_data, val_data, test_data
 
@@ -222,7 +227,20 @@ def find_latest_checkpoint(result_path):
             latest_path = ckpt_path
 
     return latest_path
+    logger.register_value("train/epoch_loss", ['train_epoch', 'tb', 'train_csv'], display_name='loss')
+    logger.register_value_group("lr/.*", ['tb'])
 
+    logger.register_value("time/train_data", ['train_batch'], average=True, display_name='data time')
+    logger.register_value("time/train_step", ['train_batch'], average=True, display_name='time')
+    logger.register_value("time/train_epoch", ['train_epoch'], display_name='Train epoch time')
+
+    logger.register_value("val/acc", ['val_batch', 'val_epoch', 'tb', 'val_csv'], average=True, display_name='clip')
+    logger.register_value("val/video", ['val_batch', 'val_epoch', 'tb', 'val_csv'], average=False, display_name='video')
+    logger.register_value("val/loss", ['val_batch', 'tb', 'val_csv'], average=True, display_name='loss')
+    logger.register_value("val/generalization_error", ['val_epoch', 'tb', 'val_csv'],
+                          display_name='Train Val accuracy gap')
+
+    logger.register_value("time/val_data", ['val_batch'], average=True, display_name='data time')
 
 def prepare_result_dir(result_path):
     result_path = Path(result_path)

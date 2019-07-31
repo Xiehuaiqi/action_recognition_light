@@ -5,6 +5,8 @@ __pycache__/
 
 # C extensions
 *.so
+/weights
+
 
 # Distribution / packaging
 .Python
@@ -101,3 +103,7 @@ ENV/
 .mypy_cache/
 
 .DS_Store
+
+/results
+.avi
+.mp4

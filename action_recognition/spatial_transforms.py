@@ -246,7 +246,8 @@ class CenterCrop(VideoSpatialTransform):
         w, h = size(img)
         th, tw = self.size
         x1 = int(round((w - tw) / 2.))
-        y1 = int(round((h - th) / 2.))
+        y1\
+            = int(round((h - th) / 2.))
         return crop(img, (x1, y1, x1 + tw, y1 + th))
 
 

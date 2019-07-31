@@ -1,6 +1,7 @@
 import cv2
 
 from .utils import load_json, load_value_file
+import os
 
 
 def get_video_names_and_annotations(data, subset):
@@ -28,9 +29,9 @@ def get_video_props(video_path, video_format, annotation):
         return n_frames, fps
 
     if video_format == 'frames':
-        if not video_path.exists():
+        if not os.path.exists(video_path):
             return 0, 0
-        n_frames = int(load_value_file(video_path / 'n_frames'))
+        n_frames = int(load_value_file(video_path +'/'+ 'n_frames'))
         fps = 30
     else:
         cap = cv2.VideoCapture(video_path.as_posix())
@@ -55,7 +56,7 @@ def load_json_annotation(root_path, annotation_path, subset, flow_path=None, vid
         if video_format == 'video' and not video_name.lower().endswith('.mp4'):
             video_name += '.mp4'
 
-        video_path = root_path / video_name
+        video_path = root_path +'/'+ video_name
 
         n_frames, fps = get_video_props(video_path, video_format, annotation)
 
@@ -69,7 +70,7 @@ def load_json_annotation(root_path, annotation_path, subset, flow_path=None, vid
         begin_t = 1
         end_t = n_frames
         sample = {
-            'video': video_path.as_posix(),
+            'video': video_path,
             'flow': flow_full_path,
             'segment': [begin_t, end_t],
             'n_frames': n_frames,

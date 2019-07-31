@@ -13,15 +13,15 @@ from action_recognition.spatial_transforms import (CenterCrop, Compose,
                                                    Normalize, Scale, ToTensor, MEAN_STATISTICS, STD_STATISTICS)
 from action_recognition.utils import load_state, generate_args
 
-TEXT_COLOR = (255, 255, 255)
+TEXT_COLOR = (255, 255, 0)
 TEXT_FONT_FACE = cv2.FONT_HERSHEY_DUPLEX
 TEXT_FONT_SIZE = 1
-TEXT_VERTICAL_INTERVAL = 45
+TEXT_VERTICAL_INTERVAL = 25
 NUM_LABELS_TO_DISPLAY = 2
 
 
 class TorchActionRecognition:
-    def __init__(self, encoder, checkpoint_path, num_classes=400):
+    def __init__(self, encoder, checkpoint_path, num_classes=101):
         model_type = "{}_vtn".format(encoder)
         args, _ = generate_args(model=model_type, n_classes=num_classes, layer_norm=False)
         self.model, _ = create_model(args, model_type)
@@ -31,7 +31,12 @@ class TorchActionRecognition:
         self.model.cuda()
 
         checkpoint = torch.load(str(checkpoint_path))
+
         load_state(self.model, checkpoint['state_dict'])
+
+        # print(len(self.model.state_dict().keys()))
+        # print(len(checkpoint['state_dict'].keys()))
+        # print(self.model)
 
         self.preprocessing = make_preprocessing(args)
         self.embeds = deque(maxlen=(args.sample_duration * args.temporal_stride))
@@ -122,7 +127,10 @@ def run_demo(model, video_cap, labels):
             break
 
         logits = model.infer_frame(model.preprocess_frame(frame))
-        probs = F.softmax(logits[0])
+        # print(np.argmax(logits[0]))
+        # print(logits[0])
+        # cv2.waitKey(0)
+        probs = F.softmax(logits[0], dim=0)
         frame = render_frame(frame, probs, labels)
 
         tock = time.time()
@@ -150,7 +158,11 @@ def main():
         labels = fd.read().strip().split('\n')
 
     model = TorchActionRecognition(args.encoder, args.checkpoint, num_classes=len(labels))
-    cap = cv2.VideoCapture(args.input_video)
+
+    # cap = cv2.VideoCapture(args.input_video)
+    # cap = cv2.VideoCapture("yawn.mp4")
+    cap = cv2.VideoCapture("rtsp://admin:admin@192.167.15.78:554/cam/realmonitor?channel=3&subtype=0")
+
     run_demo(model, cap, labels)
 
 

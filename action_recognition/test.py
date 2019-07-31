@@ -4,7 +4,6 @@ import torch.nn.functional as F
 from .utils import AverageMeter, prepare_batch
 from .utils import calculate_accuracy
 
-
 def test(args, data_loader, model, logger):
     print('test')
     model.eval()
